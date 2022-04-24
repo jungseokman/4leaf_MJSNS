@@ -7,6 +7,7 @@ import Fade from "react-reveal/Fade";
 import FollowBox from "../components/FollowBox";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  GET_FEED_REQUEST,
   GET_FRIENDS_REQUEST,
   LOGINUSER_REQUEST,
   TESTCALL_REQUEST,
@@ -81,9 +82,10 @@ const App = () => {
     userList,
     me,
     friends,
+    feeds,
   } = useSelector((state) => state.user);
   const dispatch = useDispatch();
-  console.log(friends);
+  console.log(feeds);
 
   const saveVirtualLoginInfo = async () => {
     await localStorage.setItem("mj_login_id", 1);
@@ -101,6 +103,13 @@ const App = () => {
 
     dispatch({
       type: GET_FRIENDS_REQUEST,
+      data: {
+        userId: localStorage.getItem("mj_login_id"),
+      },
+    });
+
+    dispatch({
+      type: GET_FEED_REQUEST,
       data: {
         userId: localStorage.getItem("mj_login_id"),
       },
@@ -128,42 +137,14 @@ const App = () => {
         </SearchWrapper>
 
         <FeedWrapper dr="row" ju="space-around">
-          <FeedBox
-            feedWidth={feedWidth}
-            imgSrc="https://picsum.photos/300/300"
-          />
-          <FeedBox
-            feedWidth={feedWidth}
-            imgSrc="https://picsum.photos/300/301"
-          />
-          <FeedBox
-            feedWidth={feedWidth}
-            imgSrc="https://picsum.photos/300/302"
-          />
-          <FeedBox
-            feedWidth={feedWidth}
-            imgSrc="https://picsum.photos/300/303"
-          />
-          <FeedBox
-            feedWidth={feedWidth}
-            imgSrc="https://picsum.photos/300/304"
-          />
-          <FeedBox
-            feedWidth={feedWidth}
-            imgSrc="https://picsum.photos/300/305"
-          />
-          <FeedBox
-            feedWidth={feedWidth}
-            imgSrc="https://picsum.photos/300/306"
-          />
-          <FeedBox
-            feedWidth={feedWidth}
-            imgSrc="https://picsum.photos/300/307"
-          />
-          <FeedBox
-            feedWidth={feedWidth}
-            imgSrc="https://picsum.photos/300/308"
-          />
+          {feeds &&
+            feeds.map((feed) => (
+              <FeedBox
+                feedWidth={feedWidth}
+                imgSrc={feed.imgURL}
+                content={feed.content}
+              />
+            ))}
         </FeedWrapper>
       </Wrapper>
 

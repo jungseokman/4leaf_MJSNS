@@ -12,9 +12,14 @@ import {
   LOGINUSER_REQUEST,
   LOGINUSER_SUCCESS,
   LOGINUSER_FAILURE,
+  //
   GET_FRIENDS_REQUEST,
   GET_FRIENDS_SUCCESS,
   GET_FRIENDS_FAILURE,
+  //
+  GET_FEED_REQUEST,
+  GET_FEED_SUCCESS,
+  GET_FEED_FAILURE,
 } from "../reducers/user";
 
 // SAGA AREA ********************************************************************************************************
@@ -102,6 +107,29 @@ function* getFriends(action) {
   }
 }
 
+//
+
+function getFeedAPI(data) {
+  return axios.post(`http://localhost:4000/call/test/get/feed`, data);
+}
+
+function* getFeed(action) {
+  try {
+    const result = yield call(getFeedAPI, action.data);
+
+    yield put({
+      type: GET_FEED_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: GET_FEED_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
 // ******************************************************************************************************************
 // ******************************************************************************************************************
 // ******************************************************************************************************************
@@ -122,6 +150,10 @@ function* watchGetFriends() {
   yield takeLatest(GET_FRIENDS_REQUEST, getFriends);
 }
 
+function* watchGetFeed() {
+  yield takeLatest(GET_FEED_REQUEST, getFeed);
+}
+
 //////////////////////////////////////////////////////////////
 export default function* userSaga() {
   yield all([
@@ -129,7 +161,7 @@ export default function* userSaga() {
     fork(watchUserCall),
     fork(watchLoginUser),
     fork(watchGetFriends),
-
+    fork(watchGetFeed),
     //
   ]);
 }

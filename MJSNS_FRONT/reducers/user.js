@@ -4,6 +4,7 @@ export const initState = {
   userList: [],
   me: null,
   friends: [],
+  feeds: [],
 
   st_testCallLoading: false,
   st_testCallDone: false,
@@ -20,6 +21,10 @@ export const initState = {
   st_getFriendsLoading: false,
   st_getFriendsDone: false,
   st_getFriendsError: null,
+
+  st_getFeedLoading: false,
+  st_getFeedDone: false,
+  st_getFeedError: null,
 };
 
 export const TESTCALL_REQUEST = "TESTCALL_REQUEST";
@@ -37,6 +42,10 @@ export const LOGINUSER_FAILURE = "LOGINUSER_FAILURE";
 export const GET_FRIENDS_REQUEST = "GET_FRIENDS_REQUEST";
 export const GET_FRIENDS_SUCCESS = "GET_FRIENDS_SUCCESS";
 export const GET_FRIENDS_FAILURE = "GET_FRIENDS_FAILURE";
+
+export const GET_FEED_REQUEST = "GET_FEED_REQUEST";
+export const GET_FEED_SUCCESS = "GET_FEED_SUCCESS";
+export const GET_FEED_FAILURE = "GET_FEED_FAILURE";
 
 const reducer = (state = initState, action) =>
   produce(state, (draft) => {
@@ -117,6 +126,27 @@ const reducer = (state = initState, action) =>
         break;
 
       case GET_FRIENDS_FAILURE:
+        draft.st_userCallLoading = false;
+        draft.st_userCallDone = false;
+        draft.st_userCallError = action.error;
+        break;
+
+      //
+
+      case GET_FEED_REQUEST:
+        draft.st_userCallLoading = true;
+        draft.st_userCallDone = false;
+        draft.st_userCallError = null;
+        break;
+
+      case GET_FEED_SUCCESS:
+        draft.st_userCallLoading = false;
+        draft.st_userCallDone = true;
+        draft.st_userCallError = null;
+        draft.feeds = action.data;
+        break;
+
+      case GET_FEED_FAILURE:
         draft.st_userCallLoading = false;
         draft.st_userCallDone = false;
         draft.st_userCallError = action.error;

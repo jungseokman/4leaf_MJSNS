@@ -93,4 +93,36 @@ router.post("/get/friends", (req, res, next) => {
   }
 });
 
+router.post("/get/feed", (req, res, next) => {
+  const { userId } = req.body;
+
+  const selectQuery = `
+    SELECT  id,
+            content,
+            imgURL,
+            createdAt,
+            userId
+    FROM    feed
+    WHERE   userId <> ${userId}
+    AND     isDelete = 0
+    ORDER BY createdAt DESC;
+  `;
+  try {
+    db.query(selectQuery, (err, rows) => {
+      if (err) {
+        console.error(err);
+        throw "피드값을 불러올 수 없습니다";
+      }
+      if (rows.length < 1) {
+        throw "피드값이 존재하지 않습니다.";
+      }
+      console.log(rows);
+      return res.status(200).json(rows);
+    });
+  } catch (err) {
+    console.error(err);
+    return res.status(400).send("피드쪽 데이터 베이스 오류 발생");
+  }
+});
+
 module.exports = router;

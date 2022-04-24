@@ -22,7 +22,7 @@ const Box = styled.img`
   margin-bottom: 14px;
 `;
 
-const FeedBox = ({ feedWidth, imgSrc }) => {
+const FeedBox = ({ feedWidth, imgSrc, content }) => {
   const [modalOpen, setModalOpen] = useState(false);
   const [oneWidth, setOneWidth] = useState(0);
 
@@ -51,7 +51,7 @@ const FeedBox = ({ feedWidth, imgSrc }) => {
         footer={null}
         onCancel={() => modalToggleHandler()}
       >
-        <div>나는 피드 상세정보얌!</div>
+        <div>{content}</div>
       </Modal>
     </>
   );
