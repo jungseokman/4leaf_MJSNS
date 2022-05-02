@@ -3,6 +3,8 @@ const morgan = require("morgan");
 const cors = require("cors");
 const dotenv = require("dotenv");
 dotenv.config();
+const passportConfig = require("./auth/passport");
+passportConfig();
 
 const PORT = 4000;
 const app = express();

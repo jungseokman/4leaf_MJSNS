@@ -3,6 +3,15 @@ const db = require("../db");
 
 const router = express.Router();
 
+router.post("/login", (req, res, next) => {
+  const { userId, password } = req.body;
+
+  console.log(userId);
+  console.log(password);
+
+  return res.status(200).send("오케이!");
+});
+
 router.get("/user", (req, res, next) => {
   const query1 = `
             SELECT  username

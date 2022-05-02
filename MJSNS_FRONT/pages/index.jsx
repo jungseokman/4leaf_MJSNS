@@ -75,15 +75,9 @@ const MateWrapper = styled(Wrapper)`
 
 const App = () => {
   const [feedWidth, setFeedWidth] = useState(65);
-  const {
-    st_testCallLoading,
-    st_testCallDone,
-    st_userCallDone,
-    userList,
-    me,
-    friends,
-    feeds,
-  } = useSelector((state) => state.user);
+  const { st_testCallDone, me, friends, feeds } = useSelector(
+    (state) => state.user
+  );
   const dispatch = useDispatch();
   console.log(feeds);
 
