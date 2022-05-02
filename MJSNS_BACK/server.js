@@ -4,15 +4,37 @@ const cors = require("cors");
 const dotenv = require("dotenv");
 dotenv.config();
 const passportConfig = require("./auth/passport");
-passportConfig();
 
 const PORT = 4000;
 const app = express();
 
-app.use(morgan("dev"));
-app.use(cors());
+// public
+passportConfig();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+app.set("trust proxy", 1);
+
+// develoment
+if (process.env.NODE_ENV === "development") {
+  app.use(morgan("dev"));
+  app.use(
+    cors({
+      origin: ["http://localhost:3000"],
+      credentials: true,
+    })
+  );
+}
+
+// production
+if (process.env.NODE_ENV === "development") {
+  app.use(morgan("combined"));
+  app.use(
+    cors({
+      origin: ["배포URL"],
+      credentials: true,
+    })
+  );
+}
 
 const testRouter = require("./routers/testRouter");
 
