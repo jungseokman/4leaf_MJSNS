@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Wrapper } from "../utils/globalComponents";
 import styled from "styled-components";
-import { Form, Input, message } from "antd";
+import { Button, Form, Input, message } from "antd";
 import FeedBox from "../components/FeedBox";
 import Fade from "react-reveal/Fade";
 import FollowBox from "../components/FollowBox";
@@ -73,27 +73,45 @@ const MateWrapper = styled(Wrapper)`
   height: 100%;
 `;
 
+const LoginBox = styled.div`
+  width: 550px;
+  height: 300px;
+
+  border: 1px solid #ececec;
+  border-radius: 12px;
+  box-shadow: 2px 2px 7px #999;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  padding: 50px;
+`;
+
 const App = () => {
   const [feedWidth, setFeedWidth] = useState(65);
   const { st_testCallDone, me, friends, feeds } = useSelector(
     (state) => state.user
   );
   const dispatch = useDispatch();
-  console.log(feeds);
 
   const saveVirtualLoginInfo = async () => {
     await localStorage.setItem("mj_login_id", 1);
   };
 
-  useEffect(() => {
-    saveVirtualLoginInfo();
-
+  const loginButtonAction = useCallback((data) => {
     dispatch({
       type: LOGINUSER_REQUEST,
       data: {
-        userId: localStorage.getItem("mj_login_id"),
+        username: data.usernameInput,
+        password: data.passwordInput,
       },
     });
+  }, []);
+
+  useEffect(() => {
+    saveVirtualLoginInfo();
 
     dispatch({
       type: GET_FRIENDS_REQUEST,
@@ -119,69 +137,118 @@ const App = () => {
   }, [st_testCallDone]);
 
   return (
-    <Wrapper height="100vh" dr="row">
-      {/* LEFT FEED SECITON */}
-      <Wrapper width={`${feedWidth}%`} ju="flex-start">
-        <SearchWrapper dr="row" height="55px" ju="space-between">
-          <ProjectTitle>MJ Social</ProjectTitle>
+    <>
+      {me === null ? (
+        <Wrapper height="100vh">
+          <LoginBox>
+            <Form
+              wrapperCol={{ span: 0 }}
+              labelCol={{ span: 24 }}
+              style={{ width: "100%" }}
+              onFinish={loginButtonAction}
+            >
+              <Form.Item
+                name="usernameInput"
+                rules={[{ required: true, message: "이름을 입력하세여" }]}
+              >
+                <Input placeholder="Username..." />
+              </Form.Item>
 
-          <Form>
-            <SearchInput allowClear placeholder="검색어를 입력하세요." />
-          </Form>
-        </SearchWrapper>
+              <Form.Item
+                name="birthInput"
+                rules={[{ required: true, message: "비밀번호를 눌러주세여" }]}
+              >
+                <Input placeholder="birth..." type="password" />
+              </Form.Item>
 
-        <FeedWrapper dr="row" ju="space-around">
-          {feeds &&
-            feeds.map((feed) => (
-              <FeedBox
-                feedWidth={feedWidth}
-                imgSrc={feed.imgURL}
-                content={feed.content}
-              />
-            ))}
-        </FeedWrapper>
-      </Wrapper>
+              <Button
+                style={{ width: "100%" }}
+                type="primary"
+                htmlType="submit"
+              >
+                LOGIN
+              </Button>
+            </Form>
+          </LoginBox>
+        </Wrapper>
+      ) : (
+        <Wrapper height="100vh" dr="row">
+          {/* LEFT FEED SECITON */}
+          <Wrapper width={`${feedWidth}%`} ju="flex-start">
+            <SearchWrapper dr="row" height="55px" ju="space-between">
+              <ProjectTitle>MJ Social</ProjectTitle>
 
-      <Wrapper width={`calc(100% - ${feedWidth}%)`}>
-        {/* MY INFO SECTON */}
-        <Wrapper height="35%" padding="10px" al="flex-start" ju="flex-start">
-          <InfoTitle>PROFILE</InfoTitle>
+              <Form>
+                <SearchInput allowClear placeholder="검색어를 입력하세요." />
+              </Form>
+            </SearchWrapper>
 
-          <Wrapper dr="row">
-            <Wrapper width="40%">
-              <Fade bottom>
-                <ProfileImage src={me ? me.avatar : ""} />
-              </Fade>
+            <FeedWrapper dr="row" ju="space-around">
+              {feeds &&
+                feeds.map((feed) => (
+                  <FeedBox
+                    key={feed.imgURL}
+                    feedWidth={feedWidth}
+                    imgSrc={feed.imgURL}
+                    content={feed.content}
+                  />
+                ))}
+            </FeedWrapper>
+          </Wrapper>
+
+          <Wrapper width={`calc(100% - ${feedWidth}%)`}>
+            {/* MY INFO SECTON */}
+            <Wrapper
+              height="35%"
+              padding="10px"
+              al="flex-start"
+              ju="flex-start"
+            >
+              <InfoTitle>PROFILE</InfoTitle>
+
+              <Wrapper dr="row">
+                <Wrapper width="40%">
+                  <Fade bottom>
+                    <ProfileImage src={me ? me.avatar : ""} />
+                  </Fade>
+                </Wrapper>
+                <Wrapper width="60%">
+                  <ProfileTxt>{me ? me.username : ""}</ProfileTxt>
+                  <ProfileTxt>{me ? me.birth : ""}</ProfileTxt>
+                  <ProfileTxt>{me ? me.msg : ""}</ProfileTxt>
+                </Wrapper>
+              </Wrapper>
             </Wrapper>
-            <Wrapper width="60%">
-              <ProfileTxt>{me ? me.username : ""}</ProfileTxt>
-              <ProfileTxt>{me ? me.birth : ""}</ProfileTxt>
-              <ProfileTxt>{me ? me.msg : ""}</ProfileTxt>
+
+            {/* FOLLOWERS SECTION */}
+            <Wrapper
+              height="65%"
+              padding="10px"
+              al="flex-start"
+              ju="flex-start"
+            >
+              <InfoTitle>Social MATE</InfoTitle>
+
+              <MateWrapper ju="flex-start">
+                {friends &&
+                  friends.map((friend, key) => {
+                    return (
+                      <FollowBox
+                        key={key}
+                        imgSrc={friend.avatar}
+                        friendUsername={friend.username}
+                        friendId={friend.id}
+                      >
+                        팔로우 정보
+                      </FollowBox>
+                    );
+                  })}
+              </MateWrapper>
             </Wrapper>
           </Wrapper>
         </Wrapper>
-
-        {/* FOLLOWERS SECTION */}
-        <Wrapper height="65%" padding="10px" al="flex-start" ju="flex-start">
-          <InfoTitle>Social MATE</InfoTitle>
-
-          <MateWrapper ju="flex-start">
-            {friends &&
-              friends.map((friend) => {
-                return (
-                  <FollowBox
-                    key={friend.id}
-                    imgSrc={friend.avatar}
-                    friendId={friend.username}
-                  >
-                    팔로우 정보
-                  </FollowBox>
-                );
-              })}
-          </MateWrapper>
-        </Wrapper>
-      </Wrapper>
-    </Wrapper>
+      )}
+    </>
   );
 };
 

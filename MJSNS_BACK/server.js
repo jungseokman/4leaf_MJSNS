@@ -4,6 +4,9 @@ const cors = require("cors");
 const dotenv = require("dotenv");
 dotenv.config();
 const passportConfig = require("./auth/passport");
+const cookieParser = require("cookie-parser");
+const session = require("express-session");
+const passport = require("passport");
 
 const PORT = 4000;
 const app = express();
@@ -26,7 +29,7 @@ if (process.env.NODE_ENV === "development") {
 }
 
 // production
-if (process.env.NODE_ENV === "development") {
+if (process.env.NODE_ENV === "production") {
   app.use(morgan("combined"));
   app.use(
     cors({
@@ -35,6 +38,24 @@ if (process.env.NODE_ENV === "development") {
     })
   );
 }
+
+app.use(cookieParser(process.env.SECRET));
+app.use(
+  session({
+    saveUninitialized: false,
+    resave: false,
+    secret: process.env.SECRET,
+    proxy: true,
+    cookie: {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production" ? true : false,
+      domain: "",
+    },
+  })
+);
+
+app.use(passport.initialize());
+app.use(passport.session());
 
 const testRouter = require("./routers/testRouter");
 

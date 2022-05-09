@@ -1,15 +1,56 @@
 const express = require("express");
 const db = require("../db");
+const passport = require("passport");
 
 const router = express.Router();
 
 router.post("/login", (req, res, next) => {
-  const { userId, password } = req.body;
+  passport.authenticate("local", (error, user, info) => {
+    // 에러 유무
+    if (error) {
+      console.error(error);
+      return next(error);
+    }
 
-  console.log(userId);
-  console.log(password);
+    //인포 유무
+    if (info) {
+      console.log(`정상적인 로그인이 아닐 수 있습니다. ${info}`);
+      return res.status(400).send("정상적인 로그인이 아닐 수 있습니다.");
+    }
 
-  return res.status(200).send("오케이!");
+    /* return req.login(user, async (loginErr) => {
+      if (loginErr) {
+        console.error(loginErr);
+        return next(loginErr);
+      }
+  }); */
+
+    // 에러도 없고 이상도 없으니 -> 실제 사용자 정보를 리턴해보자
+    const selectQuery = `
+                SELECT  id,
+                        username,
+                        birth,
+                        avatar,
+                        darkMode
+                FROM    user
+                WHERE   username = "${req.body.username}"
+                AND     birth = "${req.body.birth}"
+
+                `;
+    db.query(selectQuery, (err, rows) => {
+      if (err) {
+        console.error(err);
+        return res.status(400).send("[ERROR CODE 001] 로그인이 실패했습니다.");
+      }
+      if (!rows[0]) {
+        return res.status(400).send("[ERROR CODE 001] 로그인이 실패했습니다.");
+      }
+      if (rows.length === 0) {
+        return res.status(400).send("[ERROR CODE 001] 로그인이 실패했습니다.");
+      }
+      return res.status(200).json(rows[0]);
+    });
+  });
 });
 
 router.get("/user", (req, res, next) => {
@@ -113,6 +154,38 @@ router.post("/get/feed", (req, res, next) => {
             userId
     FROM    feed
     WHERE   userId <> ${userId}
+    AND     isDelete = 0
+    ORDER BY createdAt DESC;
+  `;
+  try {
+    db.query(selectQuery, (err, rows) => {
+      if (err) {
+        console.error(err);
+        throw "피드값을 불러올 수 없습니다";
+      }
+      if (rows.length < 1) {
+        throw "피드값이 존재하지 않습니다.";
+      }
+      console.log(rows);
+      return res.status(200).json(rows);
+    });
+  } catch (err) {
+    console.error(err);
+    return res.status(400).send("피드쪽 데이터 베이스 오류 발생");
+  }
+});
+
+router.post("/get/mateFeed", (req, res, next) => {
+  const { userId } = req.body;
+
+  const selectQuery = `
+    SELECT  id,
+            content,
+            imgURL,
+            createdAt,
+            userId
+    FROM    feed
+    WHERE   userId = ${userId}
     AND     isDelete = 0
     ORDER BY createdAt DESC;
   `;

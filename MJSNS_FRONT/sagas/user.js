@@ -24,6 +24,10 @@ import {
   LOGIN_REQUEST,
   LOGIN_SUCCESS,
   LOGIN_FAILURE,
+  //
+  GET_MATE_FEED_REQUEST,
+  GET_MATE_FEED_SUCCESS,
+  GET_MATE_FEED_FAILURE,
 } from "../reducers/user";
 
 // SAGA AREA ********************************************************************************************************
@@ -68,13 +72,12 @@ function* user() {
 /////////////////////////////////////////////
 
 function getLoginUserAPI(data) {
-  return axios.post(`http://localhost:4000/call/test/get/one`, data);
+  return axios.post(`http://localhost:4000/call/test/login`, data);
 }
 
 function* getLoginUser(action) {
   try {
     const result = yield call(getLoginUserAPI, action.data);
-
     yield put({
       type: LOGINUSER_SUCCESS,
       data: result.data,
@@ -157,6 +160,29 @@ function* login(action) {
   }
 }
 
+//
+
+function getMateFeedAPI(data) {
+  return axios.post(`http://localhost:4000/call/test/get/mateFeed`, data);
+}
+
+function* mateFeed(action) {
+  try {
+    const result = yield call(getMateFeedAPI, action.data);
+
+    yield put({
+      type: GET_MATE_FEED_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: GET_MATE_FEED_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
 // ******************************************************************************************************************
 // ******************************************************************************************************************
 // ******************************************************************************************************************
@@ -183,6 +209,9 @@ function* watchGetFeed() {
 function* watchLogin() {
   yield takeLatest(LOGIN_REQUEST, login);
 }
+function* watchGetMateFeed() {
+  yield takeLatest(GET_MATE_FEED_REQUEST, mateFeed);
+}
 
 //////////////////////////////////////////////////////////////
 export default function* userSaga() {
@@ -193,6 +222,7 @@ export default function* userSaga() {
     fork(watchGetFriends),
     fork(watchGetFeed),
     fork(watchLogin),
+    fork(watchGetMateFeed),
 
     //
   ]);

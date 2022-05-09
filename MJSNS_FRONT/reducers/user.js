@@ -6,6 +6,7 @@ export const initState = {
   friends: [],
   feeds: [],
   login: [],
+  mateFeed: [],
 
   st_testCallLoading: false,
   st_testCallDone: false,
@@ -30,6 +31,10 @@ export const initState = {
   st_loginLoading: false,
   st_loginDone: false,
   st_loginError: null,
+
+  st_loginMateFeedLoading: false,
+  st_loginMateFeedDone: false,
+  st_loginMateFeedError: null,
 };
 
 export const TESTCALL_REQUEST = "TESTCALL_REQUEST";
@@ -55,6 +60,10 @@ export const GET_FEED_FAILURE = "GET_FEED_FAILURE";
 export const LOGIN_REQUEST = "LOGIN_REQUEST";
 export const LOGIN_SUCCESS = "LOGIN_SUCCESS";
 export const LOGIN_FAILURE = "LOGIN_FAILURE";
+
+export const GET_MATE_FEED_REQUEST = "GET_MATE_FEED_REQUEST";
+export const GET_MATE_FEED_SUCCESS = "GET_MATE_FEED_SUCCESS";
+export const GET_MATE_FEED_FAILURE = "GET_MATE_FEED_FAILURE";
 
 const reducer = (state = initState, action) =>
   produce(state, (draft) => {
@@ -180,6 +189,27 @@ const reducer = (state = initState, action) =>
         draft.st_userCallLoading = false;
         draft.st_userCallDone = false;
         draft.st_userCallError = action.error;
+        break;
+
+      //
+
+      case GET_MATE_FEED_REQUEST:
+        draft.st_loginMateFeedLoading = true;
+        draft.st_loginMateFeedDone = false;
+        draft.st_loginMateFeedError = null;
+        break;
+
+      case GET_MATE_FEED_SUCCESS:
+        draft.st_loginMateFeedLoading = false;
+        draft.st_loginMateFeedDone = true;
+        draft.st_loginMateFeedError = null;
+        draft.mateFeed = action.data;
+        break;
+
+      case GET_MATE_FEED_FAILURE:
+        draft.st_loginMateFeedLoading = false;
+        draft.st_loginMateFeedDone = false;
+        draft.st_loginMateFeedError = action.error;
         break;
 
       default:

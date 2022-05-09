@@ -13,7 +13,7 @@ const Login = () => {
       type: LOGIN_REQUEST,
       data: {
         userId: data.userId,
-        password: data.password,
+        birth: data.password,
       },
     });
   };
