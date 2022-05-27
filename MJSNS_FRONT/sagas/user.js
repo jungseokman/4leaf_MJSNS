@@ -72,6 +72,7 @@ function* user() {
 /////////////////////////////////////////////
 
 function getLoginUserAPI(data) {
+  console.log("aaa", data);
   return axios.post(`http://localhost:4000/call/test/login`, data);
 }
 

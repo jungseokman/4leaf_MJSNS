@@ -110,85 +110,86 @@ const reducer = (state = initState, action) =>
       //
 
       case LOGINUSER_REQUEST:
-        draft.st_userCallLoading = true;
-        draft.st_userCallDone = false;
-        draft.st_userCallError = null;
+        draft.st_getLoginUserLoading = true;
+        draft.st_getLoginUserDone = false;
+        draft.st_getLoginUserError = null;
         break;
 
       case LOGINUSER_SUCCESS:
-        draft.st_userCallLoading = false;
-        draft.st_userCallDone = true;
-        draft.st_userCallError = null;
+        draft.st_getLoginUserLoading = false;
+        draft.st_getLoginUserDone = true;
+        draft.st_getLoginUserError = null;
         draft.me = action.data;
+
         break;
 
       case LOGINUSER_FAILURE:
-        draft.st_userCallLoading = false;
-        draft.st_userCallDone = false;
-        draft.st_userCallError = action.error;
+        draft.st_getLoginUserLoading = false;
+        draft.st_getLoginUserDone = false;
+        draft.st_getLoginUserError = action.error;
         break;
 
       //
 
       case GET_FRIENDS_REQUEST:
-        draft.st_userCallLoading = true;
-        draft.st_userCallDone = false;
-        draft.st_userCallError = null;
+        draft.st_getFriendsLoading = true;
+        draft.st_getFriendsDone = false;
+        draft.st_getFriendsError = null;
         break;
 
       case GET_FRIENDS_SUCCESS:
-        draft.st_userCallLoading = false;
-        draft.st_userCallDone = true;
-        draft.st_userCallError = null;
+        draft.st_getFriendsLoading = false;
+        draft.st_getFriendsDone = true;
+        draft.st_getFriendsError = null;
         draft.friends = action.data;
         break;
 
       case GET_FRIENDS_FAILURE:
-        draft.st_userCallLoading = false;
-        draft.st_userCallDone = false;
-        draft.st_userCallError = action.error;
+        draft.st_getFriendsLoading = false;
+        draft.st_getFriendsDone = false;
+        draft.st_getFriendsError = action.error;
         break;
 
       //
 
       case GET_FEED_REQUEST:
-        draft.st_userCallLoading = true;
-        draft.st_userCallDone = false;
-        draft.st_userCallError = null;
+        draft.st_getFeedLoading = true;
+        draft.st_getFeedDone = false;
+        draft.st_getFeedError = null;
         break;
 
       case GET_FEED_SUCCESS:
-        draft.st_userCallLoading = false;
-        draft.st_userCallDone = true;
-        draft.st_userCallError = null;
+        draft.st_getFeedLoading = false;
+        draft.st_getFeedDone = true;
+        draft.st_getFeedError = null;
         draft.feeds = action.data;
         break;
 
       case GET_FEED_FAILURE:
-        draft.st_userCallLoading = false;
-        draft.st_userCallDone = false;
-        draft.st_userCallError = action.error;
+        draft.st_getFeedLoading = false;
+        draft.st_getFeedDone = false;
+        draft.st_getFeedError = action.error;
         break;
 
       //
 
       case LOGIN_REQUEST:
-        draft.st_userCallLoading = true;
-        draft.st_userCallDone = false;
-        draft.st_userCallError = null;
+        draft.st_loginLoading = true;
+        draft.st_loginDone = false;
+        draft.st_loginError = null;
         break;
 
       case LOGIN_SUCCESS:
-        draft.st_userCallLoading = false;
-        draft.st_userCallDone = true;
-        draft.st_userCallError = null;
+        draft.st_loginLoading = false;
+        draft.st_loginDone = true;
+        draft.st_loginError = null;
         draft.login = action.data;
         break;
 
       case LOGIN_FAILURE:
-        draft.st_userCallLoading = false;
-        draft.st_userCallDone = false;
-        draft.st_userCallError = action.error;
+        draft.st_loginLoading = false;
+        draft.st_loginDone = false;
+        draft.st_loginError = action.error;
         break;
 
       //

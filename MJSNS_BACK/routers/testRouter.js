@@ -14,6 +14,7 @@ router.post("/login", (req, res, next) => {
 
     //인포 유무
     if (info) {
+      console.log(info);
       console.log(`정상적인 로그인이 아닐 수 있습니다. ${info}`);
       return res.status(400).send("정상적인 로그인이 아닐 수 있습니다.");
     }
@@ -50,7 +51,7 @@ router.post("/login", (req, res, next) => {
       }
       return res.status(200).json(rows[0]);
     });
-  });
+  })(req, res, next);
 });
 
 router.get("/user", (req, res, next) => {

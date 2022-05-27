@@ -105,13 +105,15 @@ const App = () => {
       type: LOGINUSER_REQUEST,
       data: {
         username: data.usernameInput,
-        password: data.passwordInput,
+        birth: data.birthInput,
       },
     });
+    console.log(data);
   }, []);
 
   useEffect(() => {
     saveVirtualLoginInfo();
+    console.log(me);
 
     dispatch({
       type: GET_FRIENDS_REQUEST,

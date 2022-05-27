@@ -7,15 +7,15 @@ module.exports = () => {
     //필드 입력, 콜백 함수
     new LocalStaregy(
       {
-        usernameField: "email",
+        usernameField: "username",
         passwordField: "birth",
       },
-      async (email, birth, done) => {
+      async (username, birth, done) => {
         try {
           const selectQuery = `
                 SELECT  id
                 FROM    user
-                WHERE   username="${email}"
+                WHERE   username="${username}"
                 AND     birth = "${birth}"
 
                 `;
